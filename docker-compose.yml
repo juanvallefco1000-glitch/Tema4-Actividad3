@@ -1,0 +1,39 @@
+services:
+  frontend:
+    build: ./frontend
+    container_name: frontend_app
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - app_network
+
+  backend:
+    build: ./backend
+    container_name: backend_api
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      MONGO_URI: mongodb://database:27017/fullstack_db
+    depends_on:
+      - database
+    networks:
+      - app_network
+
+  database:
+    image: mongo:7
+    container_name: mongo_database
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongo_fullstack_data:/data/db
+    networks:
+      - app_network
+
+networks:
+  app_network:
+
+volumes:
+  mongo_fullstack_data:

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Front-End con Docker Compose</title>
+</head>
+<body>
+  <h1>Aplicación Full Stack con Docker Compose</h1>
+
+  <input id="taskInput" placeholder="Escribe una tarea">
+  <button onclick="createTask()">Guardar tarea</button>
+
+  <h2>Tareas desde MongoDB</h2>
+  <ul id="taskList"></ul>
+
+  <script>
+    const API_URL = "http://localhost:3000/tasks";
+
+    async function loadTasks() {
+      const response = await fetch(API_URL);
+      const result = await response.json();
+
+      const list = document.getElementById("taskList");
+      list.innerHTML = "";
+
+      result.data.forEach(task => {
+        const li = document.createElement("li");
+        li.textContent = task.title;
+        list.appendChild(li);
+      });
+    }
+
+    async function createTask() {
+      const input = document.getElementById("taskInput");
+
+      await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          title: input.value
+        })
+      });
+
+      input.value = "";
+      loadTasks();
+    }
+
+    loadTasks();
+  </script>
+</body>
+</html>
